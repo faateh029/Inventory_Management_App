@@ -17,7 +17,7 @@ export const get_categories_controller = async (req,res)=>{
 } 
 
 export const get_category_form_controller = async (req ,res)=>{
-
+         res.status(200).render('new_category.ejs');
 } 
 
 export const post_new_category_controller = async (req,res)=>{
