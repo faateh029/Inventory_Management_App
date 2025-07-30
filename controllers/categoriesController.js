@@ -26,14 +26,30 @@ export const get_category_form_controller = async (req ,res)=>{
 } 
 
 export const post_new_category_controller = async (req,res)=>{
-           const cateogry_name  = req.body.category_name ; 
-           await pool.query(``)
+           const cat_name  = req.body.category_name ; 
+           await pool.query(`INSERT INTO categories (category_name) VALUES ($1)` , [cat_name]);
+           res.status(200).json({msg:"category added successfully"})
 }
 
 export const get_category_edit_form_controller = async (req,res)=>{
-
+        const cat_id = req.params.cat_id ; 
+         const cat_result =  await pool.query(`SELECT * FROM categories WHERE category_id = ($1)` , [cat_id] )
+         if(cat_result.rows.length===0){
+            return res.status(400).json({msg:"Category not found"})
+         }
+        res.status(200).render('edit_category.ejs' , {category_name:cat_result.rows[0].category_name});
 }
 
 export const patch_edited_category_controller = async (req,res)=>{
-
+          const cat_id = parseInt(req.params.cat_id);
+          const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = ($1)` , [cat_id]);
+          if(cat_id_checker.rows.length===0){
+            return res.status(404).json({msg:"404 not category id not found"});
+          }
+          const edited_name = req.body.category_name;
+          if(!edited_name){
+            return res.status(400).json({msg:"Category name cannot be a null value"})
+          }
+          await pool.query(`UPDATE categories SET category_name=($1) WHERE category_id = ($2)` , [edited_name , cat_id])
+          res.status(200).json({msg:"category updated successfully"})
 }
