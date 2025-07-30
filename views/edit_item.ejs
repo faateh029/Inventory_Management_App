@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Item</title>
+</head>
+<body>
+    <h1>Edit Item</h1>
+    <form action="/category/<%= category_id %>/items/<%= item_result.item_id %>?_method=PATCH" method="POST">
+
+        <label for="item_name">Item Name:</label>
+        <input type="text" name="item_name" id="item_name" value="<%= item_result.item_name %>" required><br><br>
+
+        <label for="item_price">Price:</label>
+        <input type="number" name="item_price" id="item_price" value="<%= item_result.item_price %>" required><br><br>
+
+        <label for="item_quantity">Quantity:</label>
+        <input type="number" name="item_quantity" id="item_quantity" value="<%= item_result.item_quantity %>" required><br><br>
+
+        <label for="item_brand">Brand:</label>
+        <input type="text" name="item_brand" id="item_brand" value="<%= item_result.item_brand %>"><br><br>
+
+        <label for="item_description">Description:</label><br>
+        <textarea name="item_description" id="item_description" rows="4" cols="50"><%= item_result.item_description %></textarea><br><br>
+
+        <label for="item_color">Color:</label>
+        <input type="text" name="item_color" id="item_color" value="<%= item_result.item_color %>"><br><br>
+
+        <button type="submit">Update Item</button>
+    </form>
+
+</body>
+</html>
