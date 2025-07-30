@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add New Item</title>
+</head>
+<body>
+  <h1>Add New Item</h1>
+
+  <form action="/category/<%= cat_id %>/items" method="POST">
+    <label for="item_name"><strong>Item Name:</strong></label><br>
+    <input type="text" id="item_name" name="item_name" required><br><br>
+
+    <!-- Hidden field to send cat_id if your POST route depends on body data -->
+    <input type="hidden" name="category_id" value="<%= cat_id %>">
+
+    <button type="submit">Add Item</button>
+  </form>
+
+</body>
+</html>

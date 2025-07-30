@@ -29,7 +29,12 @@ export const get_items_of_category_controller = async (req,res)=>{
 }
 
 export const get_item_form_controller = async (req,res)=>{
-
+            const cat_id = req.params.cat_id ; 
+            const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id=($1)` , [cat_id]);
+            if(cat_id_checker.rows.length===0){
+                return res.status(404).json({msg:"no such category found"})
+            }
+            res.status(200).render('new_item.ejs' , {cat_id:cat_id});
 }
 
 export const post_new_item_controller = async (req , res)=>{
