@@ -38,7 +38,20 @@ export const get_item_form_controller = async (req,res)=>{
 }
 
 export const post_new_item_controller = async (req , res)=>{
+          const cat_id = req.params.cat_id ; 
+            const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id=($1)` , [cat_id]);
+            if(cat_id_checker.rows.length===0){
+                return res.status(404).json({msg:"no such category found"})
+            }
 
+        const new_item_name = req.body.item_name ; 
+        const new_item_price = req.body.item_price ;
+         const new_item_quantity = req.body.item_quantity;
+         const new_item_brand = req.body.item_brand;
+        const new_item_description = req.body.item_description;
+        const new_item_color = req.body.item_color;
+         await pool.query(`INSERT INTO items (item_name,item_price,item_quantity,item_brand,item_description ,item_color , category_id) VALUES ($1 ,$2, $3, $4, $5, $6, $7) ` , [new_item_name,new_item_price,new_item_quantity,new_item_brand,new_item_description ,new_item_color ,cat_id]);
+          res.status(200).json({msg:"item added successfully"});
 }
 
 export const get_edit_item_form_controller = async (req, res)=>{
