@@ -55,7 +55,13 @@ export const post_new_item_controller = async (req , res)=>{
 }
 
 export const get_edit_item_form_controller = async (req, res)=>{
-
+          const item_id = parseInt(req.params.it_id ); 
+          const cat_id = parseInt(req.params.cat_id) ;
+         const item_result =  await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)` , [item_id , cat_id] )
+         if(item_result.rows.length===0){
+            return res.status(400).json({msg:"Ramsha Khan not found"})
+         }
+         res.status(200).render('edit_item.ejs' , {category_id:cat_id,item_result:item_result.rows[0]})
 }
 
 export const patch_edited_item_controller = async (req,res)=>{
