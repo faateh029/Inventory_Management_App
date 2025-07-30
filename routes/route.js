@@ -1,5 +1,14 @@
 import {Router} from 'express';
+//importing controller functions from categoriesController.js
+import {get_categories_controller,get_category_form_controller,post_new_category_controller,get_category_edit_form_controller ,patch_edited_category_controller } from '../controllers/categoriesController.js';
+
+//importing controller functions from itemsController.js
+import {get_items_of_category_controller,get_item_form_controller ,post_new_item_controller,get_edit_item_form_controller,patch_edited_item_controller } from '../controllers/itemsController.js'; 
+
+//setting up router
 export const inventoryRouter = new Router();
+
+
 //paginated list of all categories
 inventoryRouter.get('/categories' , get_categories_controller);
 
@@ -12,7 +21,7 @@ inventoryRouter.get('/categories/new' , get_category_form_controller);
 inventoryRouter.post('/categories' , post_new_category_controller);
 
 
-//prints all items of a category
+//prints paginated items of a category
 inventoryRouter.get('/category/:cat_id' , get_items_of_category_controller);
 
 
