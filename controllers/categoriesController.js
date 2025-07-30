@@ -15,7 +15,7 @@ export const get_categories_controller = async (req,res)=>{
         limit:limit,
         total:totalCount.rows[0].count,
         totalPages: Math.ceil(Number(totalCount.rows[0].count/limit)),
-        data:paginatedData.rows
+        data:paginatedData.rows,
     }
     res.status(200).json(result);
 

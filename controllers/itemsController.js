@@ -65,5 +65,40 @@ export const get_edit_item_form_controller = async (req, res)=>{
 }
 
 export const patch_edited_item_controller = async (req,res)=>{
+          const cat_id = parseInt(req.params.cat_id);
+          const item_id = parseInt(req.params.it_id);
+          const new_item_name = req.body.item_name ; 
+        const new_item_price = req.body.item_price ;
+        const new_item_quantity = req.body.item_quantity;
+       const new_item_brand = req.body.item_brand;
+        const new_item_description = req.body.item_description;
+        const new_item_color = req.body.item_color;
+        if(
+        !item_id || !cat_id ||
+        !new_item_name || !new_item_price || !new_item_quantity
+    ){
+            return res.status(400).json({msg:"No required field can be missed"})
+        }
+          const result  = await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id=($2)`,[item_id , cat_id]);
+          if(result.rows.length===0){
+             return res.status(400).json({msg:"Ramsha Khan not found"})
+          }
+          await pool.query(`UPDATE items SET 
+            item_name=($1) , 
+            item_price=($2) ,
+            item_quantity=($3) , 
+            item_brand=($4) ,
+            item_description= ($5) , 
+            item_color = ($6)
+             WHERE item_id= ($7) AND category_id =($8)`,
+               [new_item_name,
+                new_item_price, 
+                new_item_quantity,
+                new_item_brand,
+                new_item_description,
+                new_item_color , 
+                item_id , 
+                cat_id])
 
+          res.status(200).json({msg:"Item edited successfully"})
 }
