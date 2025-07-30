@@ -25,7 +25,7 @@ inventoryRouter.post('/category/:cat_id/items' , post_new_item_controller);
 
 
 //prints the pre written form for editing fields of an item
-inventoryRouter.get('/category/:cat_id/items/:it_id/edit' , get_edit_id_form_controller);
+inventoryRouter.get('/category/:cat_id/items/:it_id/edit' , get_edit_item_form_controller);
 
 
 //patches specific fields for that item
