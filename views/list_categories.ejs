@@ -1,0 +1,16 @@
+<% categories.forEach(category => { %>
+  <div class="category-card">
+    <h2><%= category.category_name %></h2>
+    
+    <a href="/category/<%= category.category_id %>">View Items</a>
+    <a href="/category/<%= category.category_id %>/edit">Edit</a>
+
+    <% if (parseInt(category.item_count) === 0) { %>
+      <form action="/category/<%= category.category_id %>?_method=DELETE" method="POST" style="display:inline;">
+        <button type="submit">Delete</button>
+      </form>
+    <% } else { %>
+      <button disabled>Delete (Items Exist)</button>
+    <% } %>
+  </div>
+<% }) %>
