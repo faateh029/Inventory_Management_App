@@ -18,7 +18,7 @@
       border-left: 4px solid #007bff;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .buttons a, .buttons form {
+    .buttons a, .buttons button {
       margin-right: 10px;
       display: inline-block;
     }
@@ -46,16 +46,15 @@
     <p>No items found in this category.</p>
   <% } else { %>
     <% items.forEach(item => { %>
-      <div class="item">
+      <div class="item" id="item-<%= item.item_id %>">
         <h3><%= item.item_name %></h3>
         <p><strong>Description:</strong> <%= item.item_description %></p>
         <p><strong>Quantity:</strong> <%= item.item_quantity %></p>
         <div class="buttons">
           <a href="/category/<%= category_id %>/items/<%= item.item_id %>">🔍 View</a>
           <a href="/category/<%= category_id %>/items/<%= item.item_id %>/edit">✏️ Edit</a>
-          <form action="/category/<%= category_id %>/items/<%= item.item_id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-            <button type="submit">🗑️ Delete</button>
-          </form>
+          <button onclick="deleteItem('<%= item.item_id %>', '<%= category_id %>')">🗑️ Delete</button>
+
         </div>
       </div>
     <% }) %>
@@ -70,5 +69,28 @@
       <% } %>
     <% } %>
   </div>
+
+  <script>
+   function deleteItem(itemId, categoryId) {
+  if (confirm("Are you sure you want to delete this item?")) {
+    fetch(`/category/${categoryId}/items/${itemId}`, {
+      method: "DELETE"
+    }).then(res => {
+      if (res.status === 204) {
+        const itemDiv = document.getElementById(`item-${itemId}`);
+        if (itemDiv) {
+          itemDiv.remove();
+        }
+      } else {
+        alert("Failed to delete item.");
+      }
+    }).catch(err => {
+      console.error(err);
+      alert("Something went wrong while deleting.");
+    });
+  }
+}
+
+  </script>
 </body>
 </html>
