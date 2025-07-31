@@ -106,6 +106,7 @@ export const get_one_item_controller = async(req , res)=>{
     
     // Process requested fields
     let selectedColumns = "*";  // default to all
+    let requestedFields=[];
     const fields = req.query.fields;
     if (fields) {
         const allowedFields = [
@@ -118,7 +119,7 @@ export const get_one_item_controller = async(req , res)=>{
             "item_description",
             "item_color"
         ];
-        const requestedFields = fields
+        requestedFields = fields
             .split(",")
             .map(f => f.trim())
             .filter(field => allowedFields.includes(field));
@@ -138,8 +139,13 @@ export const get_one_item_controller = async(req , res)=>{
     if (result.rows.length === 0) {
         return res.status(404).json({ msg: "Item or category not found" });
     }
-
-    res.status(200).json(result.rows[0]);
+      if (!result.rows[0].category_id) {
+  result.rows[0].category_id = cat_id;
+}
+    res.status(200).render("view_single_item", {
+    item: result.rows[0],
+    selectedFields: requestedFields
+  });
 }
 
 
