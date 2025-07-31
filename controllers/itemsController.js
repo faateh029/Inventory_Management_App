@@ -82,7 +82,7 @@ export const delete_item_controller = async (req,res)=>{
 export const get_one_item_controller = async(req , res)=>{
     const cat_id = parseInt(req.params.cat_id);
     const item_id = parseInt(req.params.it_id);
-    const item_id_checker = await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)`, [item_id , cat_id]);
+    const item_id_checker = await pool.query(`SELECT 1 FROM items WHERE item_id = ($1) AND category_id = ($2)`, [item_id , cat_id]);
     if(item_id_checker.rows.length===0){
         return res.status(404).json({msg:"404 Not found!"})
     }
@@ -122,7 +122,7 @@ export const get_one_item_controller = async(req , res)=>{
         return res.status(404).json({ msg: "Item or category not found" });
     }
 
-    res.status(200).json(result.rows);
+    res.status(200).json(result.rows[0]);
 }
 
 
