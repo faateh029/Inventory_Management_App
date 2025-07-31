@@ -17,7 +17,7 @@ export const get_items_of_category_controller = async (req,res)=>{
        //preparing result
        const totalCount =await pool.query(`SELECT COUNT(*) FROM items WHERE category_id = $1` , [catId]);
        if(Number(totalCount.rows[0].count) === 0){
-        return res.status(404).json({msg:"No items found in this category"})
+        return res.redirect(`/category/${catId}/items/new`);
        }
     //    const result = {
     //     page:page,
@@ -79,7 +79,7 @@ export const get_edit_item_form_controller = async (req, res)=>{
          if(item_result.rows.length===0){
             return res.status(400).json({msg:"Saba Qamar not found"})
          }
-         res.status(200).render('edit_item.ejs' , {category_id:cat_id,item_result:item_result.rows[0]})
+         res.status(200).render('edit_item' , {cat_id:cat_id,item_result:item_result.rows[0]})
 }
 
 
@@ -191,21 +191,7 @@ export const patch_edited_item_controller = async (req, res) => {
         ]
     );
 
-    res.status(200).json({ msg: "Item edited successfully" });
+    res.redirect(`/category/${cat_id}/items`)
 };
 
 
-export const field_query_controller = async (req, res) => {
-    const catId = Number(req.params.cat_id);
-    const item_id = parseInt(req.params.it_id);
-
-    // Check if category exists
-    const cat_id_checker = await pool.query(
-        `SELECT category_id FROM categories WHERE category_id = $1`,
-        [catId]
-    );
-    if (cat_id_checker.rows.length === 0) {
-        return res.status(404).json({ msg: "Category with this ID was not found" });
-    }
-
-};

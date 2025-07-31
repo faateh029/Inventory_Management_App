@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Edit Item</h1>
-    <form action="/category/<%= category_id %>/items/<%= item_result.item_id %>?_method=PATCH" method="POST">
+    <form action="/category/<%= cat_id %>/items/<%= item_result.item_id %>?_method=PATCH" method="POST">
 
         <label for="item_name">Item Name:</label>
         <input type="text" name="item_name" id="item_name" value="<%= item_result.item_name %>" required><br><br>
