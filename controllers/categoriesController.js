@@ -41,6 +41,24 @@ export const get_category_edit_form_controller = async (req,res)=>{
         //res.status(200).render('edit_category.ejs' , {category_name:cat_result.rows[0].category_name});
 }
 
+
+export const delete_category_controller = async (req,res)=>{
+      const cat_id = parseInt(req.params.cat_id);
+      if(!cat_id){
+        return res.status(404).json({msg:"Enter correct category id"})
+      }
+      const itemsInCategory = await pool.query(`SELECT COUNT(*) FROM items WHERE category_id = ($1)` , [cat_id]);
+      if(Number(itemsInCategory.rows[0].count) ===0){
+        await pool.query(`DELETE FROM categories WHERE category_id = ($1)`,[cat_id]);
+        return res.status(204).send();
+      }else{
+        return res.status(409).json({ msg: "Cannot delete category: items exist within this category." });
+      }
+}
+
+
+
+
 export const patch_edited_category_controller = async (req,res)=>{
           const cat_id = parseInt(req.params.cat_id);
           const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = ($1)` , [cat_id]);

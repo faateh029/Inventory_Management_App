@@ -5,7 +5,7 @@ export const get_items_of_category_controller = async (req,res)=>{
        const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = $1` , [catId])
        console.log(cat_id_checker);
        if(cat_id_checker.rows.length===0){
-        return res.status(404).json({"msg":"Cateogry with this id was not found"})
+        return res.status(404).json({msg:"Cateogry with this id was not found"})
        }
        //pagination
        const page = parseInt(req.query.page)||1;
