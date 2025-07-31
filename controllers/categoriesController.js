@@ -17,12 +17,11 @@ export const get_categories_controller = async (req,res)=>{
         totalPages: Math.ceil(Number(totalCount.rows[0].count/limit)),
         data:paginatedData.rows,
     }
-    res.status(200).json(result);
-
+    res.status(200).render("list_categories" , result);
 } 
 
 export const get_category_form_controller = async (req ,res)=>{
-         res.status(200).render('new_category.ejs');
+         res.status(200).render('add_category');
 } 
 
 export const post_new_category_controller = async (req,res)=>{
@@ -37,8 +36,8 @@ export const get_category_edit_form_controller = async (req,res)=>{
          if(cat_result.rows.length===0){
             return res.status(400).json({msg:"Category not found"})
           }
-          res.status(200).json(cat_result.rows);
-        //res.status(200).render('edit_category.ejs' , {category_name:cat_result.rows[0].category_name});
+          //res.status(200).json(cat_result.rows);
+        res.status(200).render('edit_category' , {category:cat_result.rows[0].category_name});
 }
 
 
@@ -70,5 +69,6 @@ export const patch_edited_category_controller = async (req,res)=>{
             return res.status(400).json({msg:"Category name cannot be a null value"})
           }
           await pool.query(`UPDATE categories SET category_name=($1) WHERE category_id = ($2)` , [edited_name , cat_id])
-          res.status(200).json({msg:"category updated successfully"})
+          //res.status(200).json({msg:"category updated successfully"})
+          res.status(200).render('list_categories');
 }

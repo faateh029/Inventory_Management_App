@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Category</title>
+    <title>Add New Category</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,7 +46,7 @@
 
         button {
             padding: 10px;
-            background-color: #17a2b8;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
@@ -56,7 +56,7 @@
         }
 
         button:hover {
-            background-color: #138496;
+            background-color: #0056b3;
         }
 
         .back-link {
@@ -74,12 +74,12 @@
 </head>
 <body>
 <div class="form-container">
-    <h2>Edit Category</h2>
-   <form action="/category/<%= category.category_id %>?_method=PATCH" method="POST">
+    <h2>Add New Category</h2>
+    <form action="/categories" method="POST">
         <label for="category_name">Category Name:</label>
-        <input type="text" id="category_name" name="category_name" value="<%= category.category_name %>" required>
+        <input type="text" id="category_name" name="category_name" required>
 
-        <button type="submit">Save Changes</button>
+        <button type="submit">Add Category</button>
     </form>
     <a class="back-link" href="/categories">← Back to Categories</a>
 </div>
