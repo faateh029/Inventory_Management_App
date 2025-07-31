@@ -2,19 +2,94 @@
 <html>
 <head>
   <title>Add New Item</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    .form-container {
+      background: white;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #007bff;
+    }
+  </style>
 </head>
 <body>
-  <h1>Add New Item</h1>
 
-  <form action="/category/<%= cat_id %>/items" method="POST">
-    <label for="item_name"><strong>Item Name:</strong></label><br>
-    <input type="text" id="item_name" name="item_name" required><br><br>
+  <div class="form-container">
+    <h2>Add New Item</h2>
+    <form action="/category/<%= cat_id %>/items" method="POST">
+      <label for="item_name">Item Name:</label>
+      <input type="text" id="item_name" name="item_name" required>
 
-    <!-- Hidden field to send cat_id if your POST route depends on body data -->
-    <input type="hidden" name="category_id" value="<%= cat_id %>">
+      <label for="item_description">Description:</label>
+      <textarea id="description" name="item_description" rows="3" required></textarea>
 
-    <button type="submit">Add Item</button>
-  </form>
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="item_quantity" min="0" required>
+
+      <label for="price">Price (PKR):</label>
+      <input type="number" id="price" name="item_price" min="0" step="any" required>
+
+      <label for="color">Color:</label>
+      <input type="text" id="color" name="item_color" required>
+
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" name="item_brand" required>
+
+      <button type="submit">Add Item</button>
+    </form>
+    <a class="back-link" href="/category/<%= cat_id %>/items">← Back to Items</a>
+  </div>
 
 </body>
 </html>
