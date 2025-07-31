@@ -86,10 +86,43 @@ export const get_one_item_controller = async(req , res)=>{
     if(item_id_checker.rows.length===0){
         return res.status(404).json({msg:"404 Not found!"})
     }
-    const result = item_id_checker.rows[0] ; 
-    res.status(200).json(result);
+    
+    // Process requested fields
+    let selectedColumns = "*";  // default to all
+    const fields = req.query.fields;
+    if (fields) {
+        const allowedFields = [
+            "item_id",
+            "category_id",
+            "item_name",
+            "item_price",
+            "item_quantity",
+            "item_brand",
+            "item_description",
+            "item_color"
+        ];
+        const requestedFields = fields
+            .split(",")
+            .map(f => f.trim())
+            .filter(field => allowedFields.includes(field));
 
+        if (requestedFields.length > 0) {
+            selectedColumns = requestedFields.join(",");
+        }
+        
+    }
 
+    // Run the query
+    const result = await pool.query(
+        `SELECT ${selectedColumns} FROM items WHERE item_id = $1 AND category_id = $2`,
+        [item_id, cat_id]
+    );
+
+    if (result.rows.length === 0) {
+        return res.status(404).json({ msg: "Item or category not found" });
+    }
+
+    res.status(200).json(result.rows);
 }
 
 
@@ -158,39 +191,4 @@ export const field_query_controller = async (req, res) => {
         return res.status(404).json({ msg: "Category with this ID was not found" });
     }
 
-    // Process requested fields
-    let selectedColumns = "*";  // default to all
-    const fields = req.query.fields;
-    if (fields) {
-        const allowedFields = [
-            "item_id",
-            "category_id",
-            "item_name",
-            "item_price",
-            "item_quantity",
-            "item_brand",
-            "item_description",
-            "item_color"
-        ];
-        const requestedFields = fields
-            .split(",")
-            .map(f => f.trim())
-            .filter(field => allowedFields.includes(field));
-
-        if (requestedFields.length > 0) {
-            selectedColumns = requestedFields.join(",");
-        }
-    }
-
-    // Run the query
-    const result = await pool.query(
-        `SELECT ${selectedColumns} FROM items WHERE item_id = $1 AND category_id = $2`,
-        [item_id, catId]
-    );
-
-    if (result.rows.length === 0) {
-        return res.status(404).json({ msg: "Item or category not found" });
-    }
-
-    res.status(200).json(result.rows);
 };
