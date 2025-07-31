@@ -2,7 +2,7 @@ import {pool} from '../db/pool.js';
 export const get_items_of_category_controller = async (req,res)=>{
     //handeling category_id
        const catId = Number(req.params.cat_id);
-       const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = $1` , [catId])
+       const cat_id_checker = await pool.query(`SELECT * FROM categories WHERE category_id = $1` , [catId])
        //console.log(cat_id_checker);
        if(cat_id_checker.rows.length===0){
         return res.status(404).json({msg:"Cateogry with this id was not found"})
@@ -19,14 +19,20 @@ export const get_items_of_category_controller = async (req,res)=>{
        if(Number(totalCount.rows[0].count) === 0){
         return res.status(404).json({msg:"No items found in this category"})
        }
-       const result = {
-        page:page,
-        limit:limit,
-        total:totalCount.rows[0].count,
-        totalPages:Math.ceil(Number(totalCount.rows[0].count/limit)),
-        result:paginatedResult.rows
-       }
-       res.status(200).json(result)
+    //    const result = {
+    //     page:page,
+    //     limit:limit,
+    //     total:totalCount.rows[0].count,
+    //     totalPages:Math.ceil(Number(totalCount.rows[0].count/limit)),
+    //     result:paginatedResult.rows
+    //    }
+       res.status(200).render("view_items", {
+    items: paginatedResult.rows,
+    category_id: catId,
+    category_name: cat_id_checker.rows[0].category_name,
+    page,
+    totalPages: Math.ceil(Number(totalCount.rows[0].count) / limit)
+  });
 }
 
 export const get_item_form_controller = async (req,res)=>{

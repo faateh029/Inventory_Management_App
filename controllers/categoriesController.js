@@ -1,10 +1,6 @@
 import {pool} from '../db/pool.js';
 export const get_categories_controller = async (req,res)=>{
-//     const items_count = await pool.query(`SELECT c.category_id, c.category_name, COUNT(i.item_id) AS item_count
-// FROM categories c
-// LEFT JOIN items i ON c.category_id = i.category_id
-// GROUP BY c.category_id
-// ORDER BY c.category_id;`)
+
     const page = parseInt(req.query.page )||1;
     const limit = parseInt(req.query.limit) ||5;
     const offset = (page-1)*limit ; 
