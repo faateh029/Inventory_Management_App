@@ -36,8 +36,9 @@ export const get_category_edit_form_controller = async (req,res)=>{
          const cat_result =  await pool.query(`SELECT * FROM categories WHERE category_id = ($1)` , [cat_id] )
          if(cat_result.rows.length===0){
             return res.status(400).json({msg:"Category not found"})
-         }
-        res.status(200).render('edit_category.ejs' , {category_name:cat_result.rows[0].category_name});
+          }
+          res.status(200).json(cat_result.rows);
+        //res.status(200).render('edit_category.ejs' , {category_name:cat_result.rows[0].category_name});
 }
 
 export const patch_edited_category_controller = async (req,res)=>{

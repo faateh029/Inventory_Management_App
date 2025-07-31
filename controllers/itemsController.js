@@ -3,6 +3,7 @@ export const get_items_of_category_controller = async (req,res)=>{
     //handeling category_id
        const catId = Number(req.params.cat_id);
        const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = $1` , [catId])
+       console.log(cat_id_checker);
        if(cat_id_checker.rows.length===0){
         return res.status(404).json({"msg":"Cateogry with this id was not found"})
        }
@@ -16,7 +17,7 @@ export const get_items_of_category_controller = async (req,res)=>{
        //preparing result
        const totalCount =await pool.query(`SELECT COUNT(*) FROM items WHERE category_id = $1` , [catId]);
        if(Number(totalCount.rows[0].count) === 0){
-        return res.status(404).json({"msg":"Items not found"})
+        return res.status(404).json({msg:"No items found in this category"})
        }
        const result = {
         page:page,
@@ -59,10 +60,24 @@ export const get_edit_item_form_controller = async (req, res)=>{
           const cat_id = parseInt(req.params.cat_id) ;
          const item_result =  await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)` , [item_id , cat_id] )
          if(item_result.rows.length===0){
-            return res.status(400).json({msg:"Ramsha Khan not found"})
+            return res.status(400).json({msg:"Saba Qamar not found"})
          }
          res.status(200).render('edit_item.ejs' , {category_id:cat_id,item_result:item_result.rows[0]})
 }
+
+export const get_one_item_controller = async(req , res)=>{
+    const cat_id = parseInt(req.params.cat_id);
+    const item_id = parseInt(req.params.it_id);
+    const item_id_checker = await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)`, [item_id , cat_id]);
+    if(item_id_checker.rows.length===0){
+        return res.status(404).json({msg:"404 Not found!"})
+    }
+    const result = item_id_checker.rows[0] ; 
+    res.status(200).json(result);
+
+
+}
+
 
 export const patch_edited_item_controller = async (req, res) => {
     const cat_id = parseInt(req.params.cat_id);

@@ -3,7 +3,7 @@ import {Router} from 'express';
 import {get_categories_controller,get_category_form_controller,post_new_category_controller,get_category_edit_form_controller ,patch_edited_category_controller } from '../controllers/categoriesController.js';
 
 //importing controller functions from itemsController.js
-import {get_items_of_category_controller,get_item_form_controller ,post_new_item_controller,get_edit_item_form_controller,patch_edited_item_controller } from '../controllers/itemsController.js'; 
+import {get_items_of_category_controller,get_item_form_controller ,post_new_item_controller,get_edit_item_form_controller,patch_edited_item_controller , get_one_item_controller } from '../controllers/itemsController.js'; 
 
 //setting up router
 export const inventoryRouter = new Router();
@@ -36,6 +36,8 @@ inventoryRouter.post('/category/:cat_id/items' , post_new_item_controller);
 //prints the pre written form for editing fields of an item
 inventoryRouter.get('/category/:cat_id/items/:it_id/edit' , get_edit_item_form_controller);
 
+// get only one item of a category
+inventoryRouter.get('/category/:cat_id/items/:it_id', get_one_item_controller);
 
 //patches specific fields for that item
 inventoryRouter.patch('/category/:cat_id/items/:it_id' , patch_edited_item_controller);
