@@ -37,7 +37,7 @@ export const get_category_edit_form_controller = async (req,res)=>{
             return res.status(400).json({msg:"Category not found"})
           }
           //res.status(200).json(cat_result.rows);
-        res.status(200).render('edit_category' , {category:cat_result.rows[0].category_name});
+        res.status(200).render('edit_category' , {category:cat_result.rows[0]});
 }
 
 
@@ -70,5 +70,5 @@ export const patch_edited_category_controller = async (req,res)=>{
           }
           await pool.query(`UPDATE categories SET category_name=($1) WHERE category_id = ($2)` , [edited_name , cat_id])
           //res.status(200).json({msg:"category updated successfully"})
-          res.status(200).render('list_categories');
+          res.redirect("/categories");
 }
