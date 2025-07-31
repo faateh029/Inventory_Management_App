@@ -3,7 +3,7 @@ export const get_items_of_category_controller = async (req,res)=>{
     //handeling category_id
        const catId = Number(req.params.cat_id);
        const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = $1` , [catId])
-       console.log(cat_id_checker);
+       //console.log(cat_id_checker);
        if(cat_id_checker.rows.length===0){
         return res.status(404).json({msg:"Cateogry with this id was not found"})
        }
@@ -142,4 +142,55 @@ export const patch_edited_item_controller = async (req, res) => {
     );
 
     res.status(200).json({ msg: "Item edited successfully" });
+};
+
+
+export const field_query_controller = async (req, res) => {
+    const catId = Number(req.params.cat_id);
+    const item_id = parseInt(req.params.it_id);
+
+    // Check if category exists
+    const cat_id_checker = await pool.query(
+        `SELECT category_id FROM categories WHERE category_id = $1`,
+        [catId]
+    );
+    if (cat_id_checker.rows.length === 0) {
+        return res.status(404).json({ msg: "Category with this ID was not found" });
+    }
+
+    // Process requested fields
+    let selectedColumns = "*";  // default to all
+    const fields = req.query.fields;
+    if (fields) {
+        const allowedFields = [
+            "item_id",
+            "category_id",
+            "item_name",
+            "item_price",
+            "item_quantity",
+            "item_brand",
+            "item_description",
+            "item_color"
+        ];
+        const requestedFields = fields
+            .split(",")
+            .map(f => f.trim())
+            .filter(field => allowedFields.includes(field));
+
+        if (requestedFields.length > 0) {
+            selectedColumns = requestedFields.join(",");
+        }
+    }
+
+    // Run the query
+    const result = await pool.query(
+        `SELECT ${selectedColumns} FROM items WHERE item_id = $1 AND category_id = $2`,
+        [item_id, catId]
+    );
+
+    if (result.rows.length === 0) {
+        return res.status(404).json({ msg: "Item or category not found" });
+    }
+
+    res.status(200).json(result.rows);
 };
