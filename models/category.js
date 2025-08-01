@@ -16,6 +16,5 @@ export default (Sequelize , DataTypes)=>{
         freezeTableName:true
      })
      return Category;
-
-  
 }
+
