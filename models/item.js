@@ -1,5 +1,5 @@
 import { DataTypes, Sequelize } from "sequelize";
-import category from "./category";
+//import category from "./category";
 
 export default (Sequelize , DataTypes)=>{
     const Item = Sequelize.define("items" , {

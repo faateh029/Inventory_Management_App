@@ -1,11 +1,19 @@
 import {pool} from '../db/pool.js';
+import { Category } from '../models/index.js';
+
 export const get_categories_controller = async (req,res)=>{
 
     const page = parseInt(req.query.page )||1;
     const limit = parseInt(req.query.limit) ||5;
     const offset = (page-1)*limit ; 
-    const totalCount = await pool.query(`SELECT COUNT(*) FROM categories`);
-    const paginatedData = await pool.query(`SELECT * FROM categories ORDER BY category_id  LIMIT $1 OFFSET $2` , [limit , offset])
+    // const totalCount = await pool.query(`SELECT COUNT(*) FROM categories`);
+    const totalCount = await Category.count();
+    // const paginatedData = await pool.query(`SELECT * FROM categories ORDER BY category_id  LIMIT $1 OFFSET $2` , [limit , offset])
+    const paginatedData = await Category.findAll({
+      order:['category_id' , 'ASC'],
+      limit:limit,
+      offset:offset
+    });
     const result = {
         page:page,
         limit:limit,
