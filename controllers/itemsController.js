@@ -1,4 +1,5 @@
 import {pool} from '../db/pool.js';
+import { Item } from '../models/item.js';
 export const get_items_of_category_controller = async (req,res)=>{
     //handeling category_id
        const catId = Number(req.params.cat_id);
@@ -73,13 +74,29 @@ export const post_new_item_controller = async (req , res)=>{
 }
 
 export const get_edit_item_form_controller = async (req, res)=>{
-          const item_id = parseInt(req.params.it_id ); 
-          const cat_id = parseInt(req.params.cat_id) ;
-         const item_result =  await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)` , [item_id , cat_id] )
-         if(item_result.rows.length===0){
-            return res.status(400).json({msg:"Saba Qamar not found"})
-         }
-         res.status(200).render('edit_item' , {cat_id:cat_id,item_result:item_result.rows[0]})
+
+          const item_id = parseInt(req.params.it_id);
+  const cat_id = parseInt(req.params.cat_id);
+  const item_result = await Item.findOne({
+    where: {
+      item_id: item_id,
+      category_id: cat_id
+    }
+  });
+   if (!item_result) {
+    return res.status(400).json({ msg: "Saba Qamar not found" });
+  }
+   res.status(200).render('edit_item', {
+    cat_id: cat_id,
+    item_result: item_result 
+  });
+        //   const item_id = parseInt(req.params.it_id ); 
+        //   const cat_id = parseInt(req.params.cat_id) ;
+        //  const item_result =  await pool.query(`SELECT * FROM items WHERE item_id = ($1) AND category_id = ($2)` , [item_id , cat_id] )
+        //  if(item_result.rows.length===0){
+        //     return res.status(400).json({msg:"Saba Qamar not found"})
+        //  }
+        //  res.status(200).render('edit_item' , {cat_id:cat_id,item_result:item_result.rows[0]})
 }
 
 
