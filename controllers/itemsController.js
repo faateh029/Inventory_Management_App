@@ -109,11 +109,11 @@ export const get_edit_item_form_controller = async (req, res)=>{
 export const delete_item_controller = async (req,res)=>{
     const cat_id = parseInt(req.params.cat_id);
     const item_id = parseInt(req.params.it_id);
-    const item_checker = await pool.query(`SELECT item_id FROM items WHERE category_id =($1) AND item_id = ($2)` , [cat_id , item_id])
-    if(item_checker.rows.length===0){
+    const item= await Item.findOne({where:{category_id:cat_id, item_id:item_id}})
+    if(!item){
        return res.status(404).json({msg:"404 not found!"})
     }
-    await pool.query(`DELETE FROM items WHERE category_id=($1) AND item_id = ($2)` , [cat_id,item_id])
+    await Item.destroy({where:{category_id:cat_id, item_id:item_id}})
     res.status(204).send();
 }
 
