@@ -122,13 +122,13 @@ export const delete_item_controller = async (req,res)=>{
 export const get_one_item_controller = async(req , res)=>{
     const cat_id = parseInt(req.params.cat_id);
     const item_id = parseInt(req.params.it_id);
-    const item_id_checker = await pool.query(`SELECT 1 FROM items WHERE item_id = ($1) AND category_id = ($2)`, [item_id , cat_id]);
-    if(item_id_checker.rows.length===0){
+    const item_exists = await Item.findOne({where:{category_id:cat_id , item_id:item_id}, attributes:['item_id']})
+    if(!item_exists){
         return res.status(404).json({msg:"404 Not found!"})
     }
     
     // Process requested fields
-    let selectedColumns = "*";  // default to all
+    let selectedColumns = undefined ;
     let requestedFields=[];
     const fields = req.query.fields;
     if (fields) {
@@ -148,25 +148,22 @@ export const get_one_item_controller = async(req , res)=>{
             .filter(field => allowedFields.includes(field));
 
         if (requestedFields.length > 0) {
-            selectedColumns = requestedFields.join(",");
+            selectedColumns = requestedFields;
         }
         
     }
 
     // Run the query
-    const result = await pool.query(
-        `SELECT ${selectedColumns} FROM items WHERE item_id = $1 AND category_id = $2`,
-        [item_id, cat_id]
-    );
+    const result = await Item.findOne({where:{category_id:cat_id , item_id:item_id}, attributes:selectedColumns})
 
-    if (result.rows.length === 0) {
+    if (!result) {
         return res.status(404).json({ msg: "Item or category not found" });
     }
-      if (!result.rows[0].category_id) {
-  result.rows[0].category_id = cat_id;
+      if (!result.category_id) {
+  result.category_id = cat_id;
 }
     res.status(200).render("view_single_item", {
-    item: result.rows[0],
+    item: result,
     selectedFields: requestedFields
   });
 }
