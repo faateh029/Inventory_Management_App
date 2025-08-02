@@ -1,8 +1,8 @@
 import express from 'express';
 import ejs from 'ejs'
-import sequelize from './db.js';
-import { Item } from '../models/item.js';
-import { Category } from '../models/category.js';
+import {sequelize} from './db/sequelize.js';
+import { Item } from './models/item.js';
+import { Category } from './models/category.js';
 import methodOverride from 'method-override';
 import { inventoryRouter } from './routes/route.js';
 import { fileURLToPath } from 'url';
@@ -23,12 +23,12 @@ app.use(methodOverride('_method'));
 app.use('/' , inventoryRouter);
 try {
     await sequelize.authenticate();
-    console.log("db connected")
+    //console.log("db connected")
     // db connected
     await sequelize.sync({alter:true});
-    console.log("models synced");
+    //console.log("models synced");
 } catch (error) {
-    console.log("sequelize sync error" , error)
+   // console.log("sequelize sync error" , error)
 }
 app.listen(PORT , (req,res)=>{
     console.log(`server running on port ${PORT}`)
