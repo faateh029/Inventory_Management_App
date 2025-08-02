@@ -43,9 +43,16 @@ export const get_category_form_controller = async (req ,res)=>{
 } 
 
 export const post_new_category_controller = async (req,res)=>{
-           const cat_name  = req.body.category_name ; 
-           await pool.query(`INSERT INTO categories (category_name) VALUES ($1)` , [cat_name]);
-           res.status(200).redirect("/categories")
+
+          const cat_name = req.body.category_name;
+          //inserting new row
+          await Category.create({
+          category_name: cat_name
+          });
+          res.status(200).redirect('/categories');
+          //  const cat_name  = req.body.category_name ; 
+          //  await pool.query(`INSERT INTO categories (category_name) VALUES ($1)` , [cat_name]);
+          //  res.status(200).redirect("/categories")
           }
 
 export const get_category_edit_form_controller = async (req,res)=>{
