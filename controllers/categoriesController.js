@@ -115,16 +115,21 @@ export const delete_category_controller = async (req,res)=>{
 
 
 export const patch_edited_category_controller = async (req,res)=>{
-          const cat_id = parseInt(req.params.cat_id);
-          const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id = ($1)` , [cat_id]);
-          if(cat_id_checker.rows.length===0){
-            return res.status(404).json({msg:"404 not category id not found"});
-          }
-          const edited_name = req.body.category_name;
-          if(!edited_name){
-            return res.status(400).json({msg:"Category name cannot be a null value"})
-          }
-          await pool.query(`UPDATE categories SET category_name=($1) WHERE category_id = ($2)` , [edited_name , cat_id])
+         const cat_id = parseInt(req.params.cat_id);
+
+  //checking if cateogry exists
+  const cat_id_checker = await Category.findByPk(cat_id);
+  if (!cat_id_checker) {
+    return res.status(404).json({ msg: "404 not category id not found" });
+  }
+           const edited_name = req.body.category_name;
+          if (!edited_name) {
+    return res.status(400).json({ msg: "Category name cannot be a null value" });
+  }
+           await Category.update(
+    { category_name: edited_name },
+    { where: { category_id: cat_id } }
+  );
           //res.status(200).json({msg:"category updated successfully"})
           res.redirect("/categories");
 }
