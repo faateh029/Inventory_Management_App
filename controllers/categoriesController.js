@@ -58,8 +58,11 @@ export const post_new_category_controller = async (req,res)=>{
           }
 
 export const get_category_edit_form_controller = async (req,res)=>{
-  const cat_id = req.params.id;
+  const cat_id = parseInt(req.params.cat_id);
+    console.log(cat_id);
+
   const cat_result= await Category.findByPk(cat_id);
+  console.log(cat_result) ;
  if (!cat_result) {
     return res.status(400).json({ msg: "Category not found" });
   }
