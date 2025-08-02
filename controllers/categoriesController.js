@@ -1,5 +1,7 @@
 import {pool} from '../db/pool.js';
 import { Category } from '../models/category.js';
+import { Item } from '../models/item.js';
+
 export const get_categories_controller = async (req,res)=>{
 
    const page = parseInt(req.query.page) || 1;
@@ -74,17 +76,39 @@ export const get_category_edit_form_controller = async (req,res)=>{
 
 
 export const delete_category_controller = async (req,res)=>{
-      const cat_id = parseInt(req.params.cat_id);
-      if(!cat_id){
-        return res.status(404).json({msg:"Enter correct category id"})
+  const cat_id=parseInt(req.params.cat_id);
+  if (!cat_id) {
+    return res.status(404).json({ msg: "Enter correct category id" });
+  }
+
+   const itemsInCategory = await Item.count({
+    where: {
+      category_id: cat_id
+    }
+  });
+  if (itemsInCategory === 0) {
+    await Category.destroy({
+      where: {
+        category_id: cat_id
       }
-      const itemsInCategory = await pool.query(`SELECT COUNT(*) FROM items WHERE category_id = ($1)` , [cat_id]);
-      if(Number(itemsInCategory.rows[0].count) ===0){
-        await pool.query(`DELETE FROM categories WHERE category_id = ($1)`,[cat_id]);
-        return res.status(204).send();
-      }else{
-        return res.status(409).json({ msg: "Cannot delete category: items exist within this category." });
-      }
+    });
+    return res.status(204).send();
+  } else {
+    return res.status(409).json({
+      msg: "Cannot delete category: items exist within this category."
+    });
+  }
+      // const cat_id = parseInt(req.params.cat_id);
+      // if(!cat_id){
+      //   return res.status(404).json({msg:"Enter correct category id"})
+      // }
+      // const itemsInCategory = await pool.query(`SELECT COUNT(*) FROM items WHERE category_id = ($1)` , [cat_id]);
+      // if(Number(itemsInCategory.rows[0].count) ===0){
+      //   await pool.query(`DELETE FROM categories WHERE category_id = ($1)`,[cat_id]);
+      //   return res.status(204).send();
+      // }else{
+      //   return res.status(409).json({ msg: "Cannot delete category: items exist within this category." });
+      // }
 }
 
 
