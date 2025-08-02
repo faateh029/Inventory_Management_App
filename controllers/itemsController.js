@@ -45,8 +45,8 @@ export const get_item_form_controller = async (req,res)=>{
 
 export const post_new_item_controller = async (req , res)=>{
           const cat_id = req.params.cat_id ; 
-            const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id=($1)` , [cat_id]);
-            if(cat_id_checker.rows.length===0){
+            const category = await Category.findByPk(cat_id);
+            if(!category){
                 return res.status(404).json({msg:"category not found"})
             }
   
@@ -66,7 +66,15 @@ export const post_new_item_controller = async (req , res)=>{
   ) {
     return res.status(400).json({ msg: "All fields are required and must be valid numbers/text." });
   }
-         await pool.query(`INSERT INTO items (item_name,item_price,item_quantity,item_brand,item_description ,item_color , category_id) VALUES ($1 ,$2, $3, $4, $5, $6, $7) ` , [new_item_name,new_item_price,new_item_quantity,new_item_brand,new_item_description ,new_item_color ,cat_id]);
+         await Item.create({
+            category_id:cat_id,
+            item_name:new_item_name,
+            item_price:new_item_price,
+            item_quantity:new_item_quantity,
+            item_brand:new_item_brand,
+            item_description:new_item_description,
+            item_color:new_item_color
+         })
 
          res.redirect(`/category/${cat_id}/items`);
 }
