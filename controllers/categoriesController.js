@@ -56,13 +56,20 @@ export const post_new_category_controller = async (req,res)=>{
           }
 
 export const get_category_edit_form_controller = async (req,res)=>{
-        const cat_id = req.params.cat_id ; 
-         const cat_result =  await pool.query(`SELECT * FROM categories WHERE category_id = ($1)` , [cat_id] )
-         if(cat_result.rows.length===0){
-            return res.status(400).json({msg:"Category not found"})
-          }
-          //res.status(200).json(cat_result.rows);
-        res.status(200).render('edit_category' , {category:cat_result.rows[0]});
+  const cat_id = req.params.id;
+  const cat_result= await Category.findByPk(cat_id);
+ if (!cat_result) {
+    return res.status(400).json({ msg: "Category not found" });
+  }
+  res.status(200).render('edit_category', { category: cat_result });
+  
+        // const cat_id = req.params.cat_id ; 
+        //  const cat_result =  await pool.query(`SELECT * FROM categories WHERE category_id = ($1)` , [cat_id] )
+        //  if(cat_result.rows.length===0){
+        //     return res.status(400).json({msg:"Category not found"})
+        //   }
+        //   //res.status(200).json(cat_result.rows);
+        // res.status(200).render('edit_category' , {category:cat_result.rows[0]});
 }
 
 
