@@ -1,5 +1,5 @@
 import express from 'express';
-import { sequelize, Category, Item } from './models/index.js';
+//import { sequelize, Category, Item } from './models/index.js';
 import ejs from 'ejs'
 import methodOverride from 'method-override';
 import { inventoryRouter } from './routes/route.js';
