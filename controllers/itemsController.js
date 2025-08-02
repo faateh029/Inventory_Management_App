@@ -4,8 +4,8 @@ import { Item } from '../models/item.js';
 export const get_items_of_category_controller = async (req,res)=>{
     //handeling category_id
        const catId = Number(req.params.cat_id);
-       const cat_id_checker = await Category.findByPk(catId);
-       if(!cat_id_checker){
+       const category= await Category.findByPk(catId);
+       if(!category){
         return res.status(404).json({msg:"Cateogry with this id was not found"})
        }
        //pagination
@@ -13,7 +13,7 @@ export const get_items_of_category_controller = async (req,res)=>{
        const limit = parseInt(req.query.limit)||5;
        const offset = (page-1)*limit;
        
-       const paginatedResult = await Category.findAll({
+       const items = await Item.findAll({
         where:{category_id:catId},
         order:[['item_id' , 'ASC']],
         limit,
@@ -21,14 +21,14 @@ export const get_items_of_category_controller = async (req,res)=>{
        })
 
        //preparing result
-       const totalCount = await Item.Count({where:{category_id:catId}})
+       const totalCount = await Item.count({where:{category_id:catId}})
      if (totalCount === 0) {
     return res.redirect(`/category/${catId}/items/new`);
   }
        res.status(200).render("view_items", {
-    items: paginatedResult,
+    items: items,
     category_id: catId,
-    category_name: cat_id_checker.category_name,
+    category_name: category.category_name,
     page,
     totalPages: Math.ceil(totalCount/ limit)
   });
@@ -36,8 +36,8 @@ export const get_items_of_category_controller = async (req,res)=>{
 
 export const get_item_form_controller = async (req,res)=>{
             const cat_id = req.params.cat_id ; 
-            const cat_id_checker = await pool.query(`SELECT category_id FROM categories WHERE category_id=($1)` , [cat_id]);
-            if(cat_id_checker.rows.length===0){
+            const category = await Category.findByPk(cat_id);
+            if(!category){
                 return res.status(404).json({msg:"no such category found"})
             }
             res.status(200).render('new_item' , {cat_id:cat_id});
