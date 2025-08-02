@@ -187,35 +187,29 @@ export const patch_edited_item_controller = async (req, res) => {
         return res.status(400).json({ msg: "No required field can be missed" });
     }
 
-    const result = await pool.query(
-        `SELECT * FROM items WHERE item_id = $1 AND category_id = $2`,
-        [item_id, cat_id]
-    );
+    const item = await Item.findOne({where:{category_id:cat_id , item_id:item_id}})
 
-    if (result.rows.length === 0) {
-        return res.status(400).json({ msg: "Ramsha Khan not found" });
+    if (!item) {
+        return res.status(400).json({ msg: "Item not found" });
     }
 
-    await pool.query(
-        `UPDATE items SET 
-            item_name = $1, 
-            item_price = $2,
-            item_quantity = $3, 
-            item_brand = $4,
-            item_description = $5, 
-            item_color = $6
-         WHERE item_id = $7 AND category_id = $8`,
-        [
-            new_item_name,
-            new_item_price,
-            new_item_quantity,
-            new_item_brand,
-            new_item_description,
-            new_item_color,
-            item_id,
-            cat_id
-        ]
-    );
+    await Item.update({
+            category_id:cat_id,
+            item_name:new_item_name,
+            item_price:new_item_price,
+            item_quantity:new_item_quantity,
+            item_brand:new_item_brand,
+            item_description:new_item_description,
+            item_color:new_item_color
+         },
+          {
+            where:
+                {
+                 category_id:cat_id , 
+                 item_id:item_id
+                }
+          })
+    
 
     res.redirect(`/category/${cat_id}/items`)
 };
